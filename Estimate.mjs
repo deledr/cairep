@@ -33,3 +33,5 @@ class Estimate {
         return true;
     }
 }
+
+export { Estimate };
