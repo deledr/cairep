@@ -145,7 +145,7 @@ class Preventivo {
     this.groups = [];
   }
 
-  static container = document.querySelectorAll('.t-Region-body')[1].firstChild;
+  static container = document.querySelectorAll('.t-Region-body')[1].firstElementChild;
 
   get maxId() {
     let max = 0;
