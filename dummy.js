@@ -7,3 +7,13 @@ class Dummy {
    console.log(`${this.name} is working`); 
   }
 }
+
+class Dimmy {
+ constructor() {
+   this.name = 'dimmy';
+ }
+  
+  isWorking() {
+   console.log(`${this.name} is working`); 
+  }
+}
