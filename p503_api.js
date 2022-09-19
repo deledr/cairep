@@ -152,7 +152,11 @@ class Preventivo {
     this.groups.forEach(grp => max = max < grp.groupid ? grp.groupid : max);
     return ++max;
   }
-
+  
+  doesItWork() {
+    console.log('from gh: it works!');
+  }
+  
   addGroup(group) {
     if(group.groupname.length === 0)
       return false;
