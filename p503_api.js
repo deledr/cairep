@@ -155,6 +155,7 @@ class Preventivo {
   
   doesItWork() {
     console.log('from gh: it works!');
+    console.log(Preventivo.container);
   }
   
   addGroup(group) {
