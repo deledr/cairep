@@ -14,6 +14,8 @@ const ID_ROW_FOOTER = 'row_footer_';
 const ID_TOT_PRICE = 'grp_totprice_';
 const ID_TOT_WEIGHT = 'grp_totweight_';
 
+
+
 class Group {
   constructor(gropuname) {
     this.groupname = gropuname;
@@ -154,16 +156,15 @@ class Preventivo {
   
   doesItWork() {
     console.log('from gh: it works!');
-    console.log(Preventivo.container);
   }
   
   addGroup(group) {
     if(group.groupname.length === 0)
       return false;
-    this.groups.forEach(grp => {
-      if(group.groupname === grp.groupname)
+    for(let i = 0; i < this.groups.length; i++) {
+      if(group.groupname === this.groups[i].groupname)
         return false;
-    });
+    }
     group.groupid = this.maxId;
     this.groups.push(group);
     let div = document.createElement('div');
@@ -172,3 +173,8 @@ class Preventivo {
     return true;
   }
 }
+
+let prev = new Preventivo();
+console.log(prev.addGroup(new Group('abc')));
+console.log(prev.addGroup(new Group('abc')));
+console.log(prev.addGroup(new Group('abc')));
