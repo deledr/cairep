@@ -134,6 +134,4 @@ class Group {
       </div>`;
     }
 }
-
-let grp = new Group('prova');
-console.log(Group.printhtml(grp));
+export { Group };
