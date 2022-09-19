@@ -15,6 +15,39 @@ const ID_TOT_PRICE = 'grp_totprice_';
 const ID_TOT_WEIGHT = 'grp_totweight_';
 
 
+class Item {
+  constructor() {
+    this.id = null;
+    this.description = null;
+    this.cost = 0.00;
+    this.measureUnit = null;
+    this.quantity = 1;
+    this.weight = 0.00;
+    this.markup = 0.00;
+    this.forcedSellingPrice = 0.00;
+    this.notes = '';
+    this.costFlag = 0;
+    this.markupFlag = 0;
+    this.sellingPriceFlag = 0;
+  }
+
+  get sellingPrince() {
+    if(this.markupFlag)
+      return this.cost*(1+this.markup);
+    else if(this.sellingPriceFlag)
+      return this.forcedSellingPrice;
+    else
+      return -1;
+  }
+  get totalSellingPrice() {
+    return this.sellingPrince*this.quantity;
+  }
+
+  get totalWeight() {
+    return this.weight*this.quantity;
+  }
+}
+
 class Group {
   constructor(gropuname) {
     this.groupname = gropuname;
@@ -134,6 +167,30 @@ class Group {
       </div>
       </div>`;
   }
+
+  addItem(item) {
+    items.push(item);
+    let row = `<tr id="${ID_ROW_ITEM}${this.groupid}_${this.items.length+1}">
+      <td class="u-tC" headers="C124311034721760705" name="selezione"><input type="checkbox" onchange="myRowSelected(this)"/></td>
+      <td class="u-tC" headers="C122455892539849343" name="codice">${item.id}</td>
+      <td class="u-tC" headers="C122455935492849344" name="articolo">${item.description}</td>
+      <td class="u-tC" headers="C122456192991849346" name="prezzo_acq">${item.cost}</td>
+      <td class="u-tC" headers="C125994632234120404" name="ricarico">${item.markup}</td>
+      <td class="u-tC" headers="C122456192931849346" name="prezzo_ven">${item.sellingPrince}</td>
+      <td class="u-tC unselectable" headers="C122456586781849350" name="quantita">
+      <span class="t-Icon t-Icon--right fa fa-minus-circle-o" aria-hidden="true" onclick="modQta(this, \\'min\\');"></span>
+      <span>&nbsp;&nbsp;&nbsp;</span>${item.quantity}<span>&nbsp;&nbsp;&nbsp;</span>
+      <span class="t-Icon t-Icon--right fa fa-plus-circle-o" aria-hidden="true" onclick="modQta(this,\\'plu\\');"></span>
+      </td>
+      <td class="u-tC" headers="C125994632234120707" name="prezzo_tot"></td>
+      <td class="u-tC" headers="C122456234565849347" name="note"></td>
+      <td class="u-tC" headers="C122456315513849348" name="peso"></td>
+      <td class="u-tC" headers="C125994702459120708" name="peso_tot"></td>
+      <td class="u-tC" headers="C124311280166760707" name="modifica">
+      <span class="t-Icon t-Icon--right fa fa-pencil-square-o" aria-hidden="true" id="'+ID_BTN_MOD_ITEM+groupid+'_'+rowid+'" onclick="openDialogModItem(this);"></span></td>
+      </tr>`;
+  }
+
 }
 
 
