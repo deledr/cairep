@@ -28,7 +28,7 @@ class Utils {
     return `<div class="row" id="${ID_ROOT_CONTAINER}${group.groupid}">
       <div class="col col-12 apex-col-auto">
       <div class="t-IRR-region margin-bottom-lg lto122453127865849316_0 js-apex-region" role="group" aria-labelledby="R122453127865849316_heading">
-      <h2 id="${ID_GRP_TITLE}${group.groupid}">${group.groupname.toUpperCase()}</h2>
+      <h2 id="${ID_GRP_TITLE}${group.groupid}">${group.groupname.trim().toUpperCase()}</h2>
       <div class="a-IRR-container">
       <div aria-live="polite" class="a-IRR">
       <div class="a-IRR-singleRowView"></div>
@@ -246,7 +246,7 @@ class Group {
     item.rowid = this.maxRowId;
     this.items.push(item);
     let row = Utils.printRowHTML(item);
-    let div = document.createElement('div');
+    let div = document.createElement('tbody');
     div.innerHTML = row;
     this.groupFooter.insertAdjacentElement('beforebegin', div.firstElementChild);
   }
@@ -298,10 +298,10 @@ class Estimate {
   }
   
   addGroup(group) {
-    if(group.groupname.length === 0)
+    if(group.groupname.trim().length === 0)
       return false;
     for(let i = 0; i < this.groups.length; i++) {
-      if(group.groupname === this.groups[i].groupname)
+      if(group.groupname.trim().toUpperCase() === this.groups[i].groupname.trim().toUpperCase())
         return false;
     }
     group.groupid = this.maxId;
