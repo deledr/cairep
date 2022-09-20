@@ -136,8 +136,8 @@ class Utils {
       </div>`;
   }
 
-  static printRowHTML(item) {
-    return `<tr id="${ID_ROW_ITEM}${this.groupid}_${item.rowid}">
+  static printRowHTML(groupid, item) {
+    return `<tr id="${ID_ROW_ITEM}${groupid}_${item.rowid}">
       <td class="u-tC" headers="C124311034721760705" name="selezione"><input type="checkbox" onchange="myRowSelected(this)"/></td>
       <td class="u-tC" headers="C122455892539849343" name="codice">${item.id}</td>
       <td class="u-tC" headers="C122455935492849344" name="articolo">${item.description}</td>
@@ -155,7 +155,7 @@ class Utils {
       <td class="u-tC" headers="C122456315513849348" name="peso">${Utils.dotAdapter(item.weight)}</td>
       <td class="u-tC" headers="C125994702459120708" name="peso_tot">${Utils.dotAdapter(item.totalWeight)}</td>
       <td class="u-tC" headers="C124311280166760707" name="modifica">
-      <span class="t-Icon t-Icon--right fa fa-pencil-square-o" aria-hidden="true" id="${ID_BTN_MOD_ITEM}${this.groupid}_${item.rowid}" onclick="openDialogModItem(this);"></span></td>
+      <span class="t-Icon t-Icon--right fa fa-pencil-square-o" aria-hidden="true" id="${ID_BTN_MOD_ITEM}${groupid}_${item.rowid}" onclick="openDialogModItem(this);"></span></td>
       </tr>`;
   }
 }
@@ -245,9 +245,10 @@ class Group {
   addItem(item) {
     item.rowid = this.maxRowId;
     this.items.push(item);
-    let row = Utils.printRowHTML(item);
+    let row = Utils.printRowHTML(this.groupid, item);
     let div = document.createElement('tbody');
     div.innerHTML = row;
+    console.log(row);
     this.groupFooter.insertAdjacentElement('beforebegin', div.firstElementChild);
   }
 
@@ -312,6 +313,7 @@ class Estimate {
     return true;
   }
 }
+
 
 
 
