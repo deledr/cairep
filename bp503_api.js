@@ -14,51 +14,17 @@ const ID_ROW_FOOTER = 'row_footer_';
 const ID_TOT_PRICE = 'grp_totprice_';
 const ID_TOT_WEIGHT = 'grp_totweight_';
 
+class Utils {
+  constructor() {}
 
-class Item {
-  constructor() {
-    this.id = null;
-    this.description = null;
-    this.cost = 0.00;
-    this.measureUnit = null;
-    this.quantity = 1;
-    this.weight = 0.00;
-    this.markup = 0.00;
-    this.forcedSellingPrice = 0.00;
-    this.notes = '';
-    this.costFlag = 0;
-    this.markupFlag = 0;
-    this.sellingPriceFlag = 0;
-  }
-
-  get sellingPrince() {
-    if(this.markupFlag)
-      return this.cost*(1+this.markup);
-    else if(this.sellingPriceFlag)
-      return this.forcedSellingPrice;
+  static dotAdapter(num) {
+    if((''+num).indexOf('.') < 0)
+      return ''+num;
     else
-      return -1;
-  }
-  get totalSellingPrice() {
-    return this.sellingPrince*this.quantity;
+      return (''+num).replace('.',',');
   }
 
-  get totalWeight() {
-    return this.weight*this.quantity;
-  }
-}
-
-class Group {
-  constructor(gropuname) {
-    this.groupname = gropuname;
-    this.groupid = 0;
-    this.include = 1;
-    this.items = [];
-    this.totalPrice = 0.00;
-    this.totalWeight = 0.00;
-  }
-
-  static printhtml(group) {
+  static printGroupHTML(group) {
     return `<div class="row" id="${ID_ROOT_CONTAINER}${group.groupid}">
       <div class="col col-12 apex-col-auto">
       <div class="t-IRR-region margin-bottom-lg lto122453127865849316_0 js-apex-region" role="group" aria-labelledby="R122453127865849316_heading">
@@ -128,6 +94,7 @@ class Group {
       <th class="a-IRR-header" id="C125994632234120404"><a class="a-IRR-headerLink" data-column="125994632234120404" href="#">Ricarico %</a></th>
       <th class="a-IRR-header" id="C122456192931849346"><a class="a-IRR-headerLink" data-column="122456192931849346" href="#">Prezzo<br />di Vendita</a></th>
       <th class="a-IRR-header" id="C122456586781849350"><a class="a-IRR-headerLink" data-column="122456586781849350" href="#">Quantità</a></th>
+      <th class="a-IRR-header" id="C122456586781849353"><a class="a-IRR-headerLink" data-column="122456586781849353" href="#">UM</a></th>
       <th class="a-IRR-header" id="C125994632234120707"><a class="a-IRR-headerLink" data-column="125994632234120707" href="#">Prezzo <br />Totale</a></th>
       <th class="a-IRR-header" id="C122456234565849347"><a class="a-IRR-headerLink" data-column="122456234565849347" href="#">Note</a></th>
       <th class="a-IRR-header" id="C122456315513849348"><a class="a-IRR-headerLink" data-column="122456315513849348" href="#">Peso (Kg)</a></th>
@@ -142,10 +109,11 @@ class Group {
       <td class="u-tC" headers="C125994632234120404"></td>
       <td class="u-tC" headers="C122456192931849346"></td>
       <td class="u-tC" headers="C122456586781849350"></td>
-      <td class="u-tC totalCount" id='${ID_TOT_PRICE}${group.groupid}' headers="C125994632234120707">Totale ${group.totalPrice}</td>
+      <td class="u-tC" headers="C122456586781849353"></td>
+      <td class="u-tC totalCount" id='${ID_TOT_PRICE}${group.groupid}' headers="C125994632234120707">Totale ${Utils.dotAdapter(group.totalPrice)}</td>
       <td class="u-tC" headers="C122456234565849347"></td>
       <td class="u-tC" headers="C122456315513849348"></td>
-      <td class="u-tC totalCount" id='${ID_TOT_WEIGHT}${group.groupid}' headers="C125994702459120708">Totale ${group.totalWeight}</td>
+      <td class="u-tC totalCount" id='${ID_TOT_WEIGHT}${group.groupid}' headers="C125994702459120708">Totale ${Utils.dotAdapter(group.totalWeight)}</td>
       <td class="u-tC" headers="C124311280166760707"></td>
       </tr>
       </tbody>
@@ -168,27 +136,134 @@ class Group {
       </div>`;
   }
 
-  addItem(item) {
-    items.push(item);
-    let row = `<tr id="${ID_ROW_ITEM}${this.groupid}_${this.items.length+1}">
+  static printRowHTML(item) {
+    return `<tr id="${ID_ROW_ITEM}${this.groupid}_${item.rowid}">
       <td class="u-tC" headers="C124311034721760705" name="selezione"><input type="checkbox" onchange="myRowSelected(this)"/></td>
       <td class="u-tC" headers="C122455892539849343" name="codice">${item.id}</td>
       <td class="u-tC" headers="C122455935492849344" name="articolo">${item.description}</td>
-      <td class="u-tC" headers="C122456192991849346" name="prezzo_acq">${item.cost}</td>
-      <td class="u-tC" headers="C125994632234120404" name="ricarico">${item.markup}</td>
+      <td class="u-tC" headers="C122456192991849346" name="prezzo_acq">${Utils.dotAdapter(item.cost)}</td>
+      <td class="u-tC" headers="C125994632234120404" name="ricarico">${Utils.dotAdapter(item.markup)}</td>
       <td class="u-tC" headers="C122456192931849346" name="prezzo_ven">${item.sellingPrince}</td>
       <td class="u-tC unselectable" headers="C122456586781849350" name="quantita">
-      <span class="t-Icon t-Icon--right fa fa-minus-circle-o" aria-hidden="true" onclick="modQta(this, \\'min\\');"></span>
+      <span class="t-Icon t-Icon--right fa fa-minus-circle-o" aria-hidden="true" onclick="modQta(this, 'min');"></span>
       <span>&nbsp;&nbsp;&nbsp;</span>${item.quantity}<span>&nbsp;&nbsp;&nbsp;</span>
-      <span class="t-Icon t-Icon--right fa fa-plus-circle-o" aria-hidden="true" onclick="modQta(this,\\'plu\\');"></span>
+      <span class="t-Icon t-Icon--right fa fa-plus-circle-o" aria-hidden="true" onclick="modQta(this, 'plu');"></span>
       </td>
-      <td class="u-tC" headers="C125994632234120707" name="prezzo_tot"></td>
-      <td class="u-tC" headers="C122456234565849347" name="note"></td>
-      <td class="u-tC" headers="C122456315513849348" name="peso"></td>
-      <td class="u-tC" headers="C125994702459120708" name="peso_tot"></td>
+      <td class="u-tC" headers="C122456586781849353" name="um">${item.measureUnit}</td>
+      <td class="u-tC" headers="C125994632234120707" name="prezzo_tot">${item.totalSellingPrice}</td>
+      <td class="u-tC" headers="C122456234565849347" name="note">${item.notes}</td>
+      <td class="u-tC" headers="C122456315513849348" name="peso">${Utils.dotAdapter(item.weight)}</td>
+      <td class="u-tC" headers="C125994702459120708" name="peso_tot">${Utils.dotAdapter(item.totalWeight)}</td>
       <td class="u-tC" headers="C124311280166760707" name="modifica">
-      <span class="t-Icon t-Icon--right fa fa-pencil-square-o" aria-hidden="true" id="'+ID_BTN_MOD_ITEM+groupid+'_'+rowid+'" onclick="openDialogModItem(this);"></span></td>
+      <span class="t-Icon t-Icon--right fa fa-pencil-square-o" aria-hidden="true" id="${ID_BTN_MOD_ITEM}${this.groupid}_${item.rowid}" onclick="openDialogModItem(this);"></span></td>
       </tr>`;
+  }
+}
+
+class Item {
+  constructor() {
+    this.id = '';
+    this.description = '';
+    this.cost = 0.00;
+    this.measureUnit = '';
+    this.quantity = 1;
+    this.weight = 0.00;
+    this.markup = 0.00;
+    this.forcedSellingPrice = 0.00;
+    this.notes = '';
+    this.costFlag = 0;
+    this.markupFlag = 0;
+    this.sellingPriceFlag = 0;
+    this.rowid = 0;
+    this.checked = 0;
+  }
+
+  get sellingPrince() {
+    if(this.markupFlag)
+      return this.cost*(1+this.markup);
+    else if(this.sellingPriceFlag)
+      return this.forcedSellingPrice;
+    else
+      return -1;
+  }
+  get totalSellingPrice() {
+    return this.sellingPrince*this.quantity;
+  }
+
+  get totalWeight() {
+    return this.weight*this.quantity;
+  }
+
+
+}
+
+class Group {
+  constructor(groupname) {
+    this.groupname = groupname;
+    this.groupid = 0;
+    this.include = 1;
+    this.items = [];
+    this.totalPrice = 0.00;
+    this.totalWeight = 0.00;
+  }
+
+
+
+  get maxRowId() {
+    let max = 0;
+    this.items.forEach(item => max = max < item.rowid ? item.rowid : max);
+    return  ++max;
+  }
+
+
+  get isAnyItemChecked() {
+    let checked = false;
+    this.items.forEach(item => {
+      if(item.checked === 1) {
+        checked = true;
+          return;
+      }
+    });
+    return checked;
+  }
+
+  get groupFooter() {
+    return document.getElementById(`#${ID_ROW_FOOTER}${this.groupid}`);
+  }
+
+  indexByRowId(rowid) {
+    let index = -1;
+    for(let i = 0; i < this.items.length; i++) {
+      if (this.items[i].rowid === rowid) {
+        index = i;
+        break;
+      }
+    }
+    return index;
+  }
+
+  addItem(item) {
+    item.rowid = this.maxRowId;
+    this.items.push(item);
+    let row = Utils.printRowHTML(item);
+    let div = document.createElement('div');
+    div.innerHTML = row;
+    this.groupFooter.insertAdjacentElement('beforebegin', div.firstElementChild);
+  }
+
+  removeItems() {
+    while(this.isAnyItemChecked) {
+      for(let i = 0; i<this.items.length; i++) {
+        if(this.items[i].checked === 1) {
+          this.items.splice(i,1);
+          $(`#${ID_ROW_ITEM}${this.groupid}_${item.rowid}`).children('td').animate({padding: 0
+        }).wrapInner('<div />').children().slideUp(function() {
+          $(this).closest('tr').remove();
+        });
+          break;
+        }
+      }
+    }
   }
 
 }
@@ -208,6 +283,15 @@ class Estimate {
     this.groups.forEach(grp => max = max < grp.groupid ? grp.groupid : max);
     return ++max;
   }
+
+  indexByGroupId(groupid) {
+    let i = -1;
+    this.groups.forEach(grp, index => {
+      if(grp.groupid === groupid)
+        i = index;
+    });
+    return i;
+  }
   
   doesItWork() {
     console.log('from gh: it works!');
@@ -223,8 +307,11 @@ class Estimate {
     group.groupid = this.maxId;
     this.groups.push(group);
     let div = document.createElement('div');
-    div.innerHTML = Group.printhtml(group);
+    div.innerHTML = Utils.printGroupHTML(group);
     this.container.insertAdjacentElement('beforeend', div.firstElementChild);
     return true;
   }
 }
+
+
+
