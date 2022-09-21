@@ -228,7 +228,7 @@ class Group {
   }
 
   get groupFooter() {
-    return document.getElementById(`#${ID_ROW_FOOTER}${this.groupid}`);
+    return document.getElementById(`${ID_ROW_FOOTER}${this.groupid}`);
   }
 
   indexByRowId(rowid) {
